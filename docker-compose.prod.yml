@@ -1,0 +1,101 @@
+services:
+
+  # ── SSL reverse proxy ────────────────────────────────────────────────────────
+
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy:1.5
+    container_name: nginx-proxy
+    restart: always
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - nginx_conf:/etc/nginx/conf.d
+      - nginx_vhost:/etc/nginx/vhost.d
+      - nginx_html:/usr/share/nginx/html
+      - nginx_certs:/etc/nginx/certs:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - proxy
+
+  acme-companion:
+    image: nginxproxy/acme-companion
+    container_name: acme-companion
+    restart: always
+    environment:
+      - DEFAULT_EMAIL=georginovosib@gmail.com
+    volumes_from:
+      - nginx-proxy
+    volumes:
+      - nginx_certs:/etc/nginx/certs:rw
+      - acme:/etc/acme.sh
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - proxy
+
+  # ── Database ─────────────────────────────────────────────────────────────────
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: survey_db
+      POSTGRES_USER: survey_user
+      POSTGRES_PASSWORD: survey_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U survey_user -d survey_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - proxy
+
+  # ── App ──────────────────────────────────────────────────────────────────────
+
+  backend:
+    image: georgheim13/survey-backend:latest
+    restart: unless-stopped
+    expose:
+      - '3001'
+    env_file: ./backend.env
+    environment:
+      DATABASE_URL: postgresql://survey_user:survey_password@postgres:5432/survey_db
+      VIRTUAL_HOST: survey-quizzes.ru
+      VIRTUAL_PATH: /api/
+      VIRTUAL_PORT: '3001'
+      LETSENCRYPT_HOST: survey-quizzes.ru
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - proxy
+
+  frontend:
+    image: georgheim13/survey-frontend:latest
+    restart: unless-stopped
+    expose:
+      - '3000'
+    environment:
+      VIRTUAL_HOST: survey-quizzes.ru
+      VIRTUAL_PATH: /
+      VIRTUAL_PORT: '3000'
+      LETSENCRYPT_HOST: survey-quizzes.ru
+      LETSENCRYPT_EMAIL: georginovosib@gmail.com
+    depends_on:
+      - backend
+    networks:
+      - proxy
+
+volumes:
+  postgres_data:
+  nginx_conf:
+  nginx_vhost:
+  nginx_html:
+  nginx_certs:
+  acme:
+
+networks:
+  proxy:
+    driver: bridge

@@ -1,0 +1,41 @@
+@import "tailwindcss";
+@source "../components/**/*.tsx";
+@source "../app/**/*.tsx";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg:           #ffffff;
+  --bg-subtle:    #F8F9FA;
+  --surface:      #ffffff;
+  --surface-2:    #F2F3F5;
+  --surface-3:    #E9EAEC;
+  --border:       #E5E7EB;
+  --text:         #111827;
+  --text-2:       #374151;
+  --text-muted:   #6B7280;
+  --text-faint:   #9CA3AF;
+  --brand:        #1570EF;
+  --brand-subtle: #EBF3FF;
+}
+
+.dark {
+  --bg:           #0D1117;
+  --bg-subtle:    #161B22;
+  --surface:      #21262D;
+  --surface-2:    #161B22;
+  --surface-3:    #30363D;
+  --border:       #30363D;
+  --text:         #E6EDF3;
+  --text-2:       #CDD9E5;
+  --text-muted:   #8B949E;
+  --text-faint:   #6E7681;
+  --brand:        #388BFD;
+  --brand-subtle: #1B2840;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+}

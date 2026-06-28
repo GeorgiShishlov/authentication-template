@@ -1,0 +1,6 @@
+node_modules
+*.sqlite
+.env
+.env.*
+__tests__
+*.test.js

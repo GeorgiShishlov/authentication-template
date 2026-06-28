@@ -1,0 +1,22 @@
+# Environment files — never commit secrets
+backend/.env
+backend/*.env
+.env
+.env.*
+
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# SQLite database
+*.sqlite
+*.sqlite3
+
+# Build artifacts
+backend/dist/

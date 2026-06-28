@@ -67,7 +67,7 @@ function HomeContent() {
               className="px-6 py-3 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
               style={{ background: 'var(--brand)' }}
             >
-              Зарегистрироваться →
+              Создать аккаунт →
             </button>
             <button
               onClick={() => openModal('login')}

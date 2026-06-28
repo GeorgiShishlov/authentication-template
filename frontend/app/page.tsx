@@ -63,20 +63,20 @@ function HomeContent() {
           </p>
           <div className="flex items-center gap-3 justify-center">
             <button
-              onClick={() => openModal('login')}
+              onClick={() => openModal('register')}
               className="px-6 py-3 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
               style={{ background: 'var(--brand)' }}
             >
-              Войти
+              Зарегистрироваться →
             </button>
             <button
-              onClick={() => openModal('register')}
+              onClick={() => openModal('login')}
               className="px-6 py-3 rounded-xl text-sm font-semibold transition-colors"
               style={{ color: 'var(--text-muted)', background: 'var(--surface-2)' }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
             >
-              Зарегистрироваться
+              Войти в аккаунт
             </button>
           </div>
         </div>
